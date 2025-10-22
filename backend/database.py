@@ -3,6 +3,13 @@ from contextlib import contextmanager
 from typing import Generator
 import os
 
+# --- ПОЧАТОК ВИПРАВЛЕННЯ ---
+# Напряму додаємо шлях до папки з бібліотеками SpatiaLite
+# Це гарантує, що Python їх знайде
+if hasattr(os, 'add_dll_directory'):
+    os.add_dll_directory('D:\\spatialite')
+# --- КІНЕЦЬ ВИПРАВЛЕННЯ ---
+
 DATABASE_PATH = "cameras.db"
 
 @contextmanager
@@ -14,7 +21,7 @@ def get_db_connection() -> Generator[sqlite3.Connection, None, None]:
     try:
         conn.load_extension("mod_spatialite")
     except Exception as e:
-        print(f"Warning: Could not load SpatiaLite extension: {e}")
+        print(f"CRITICAL ERROR: Could not load SpatiaLite extension: {e}")
     conn.enable_load_extension(False)
     try:
         yield conn
